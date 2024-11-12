@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_12y69j8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:process id="task_execute" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0e9181x</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0qdqeja">
+      <bpmn:incoming>Flow_1x0ikdn</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0e9181x" sourceRef="StartEvent_1" targetRef="task1" />
+    <bpmn:sequenceFlow id="Flow_00x84t5" sourceRef="task1" targetRef="task2" />
+    <bpmn:scriptTask id="task1" name="initiate user object" scriptFormat="javascript" camunda:resultVariable="userObj2">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="inputUserObj">
+            <camunda:script scriptFormat="javascript">obj = {
+id:1,
+Name:"Namarta"
+}
+obj</camunda:script>
+          </camunda:inputParameter>
+          <camunda:outputParameter name="userObj3">
+            <camunda:script scriptFormat="javascript">var userObj3 = {
+    id:3,
+    name:"Nikhil Sharma Upadhaya"
+}
+userObj3</camunda:script>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0e9181x</bpmn:incoming>
+      <bpmn:outgoing>Flow_00x84t5</bpmn:outgoing>
+      <bpmn:script>var user = {
+    id:1,
+    name:"Mridul Sharma Upadhaya"
+}
+var userObj2 = {
+    id:2,
+    name:"Ankit Sharma"
+}
+execution.setVariable("userObj",user)
+print("user info is = ", JSON.stringify(user))
+print("input variable user info is = ", JSON.stringify(inputUserObj))
+
+userObj2</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_1b4erlt" sourceRef="task2" targetRef="Activity_1kqtnu4" />
+    <bpmn:scriptTask id="task2" name="initialise dept object" scriptFormat="javascript" camunda:resource="initialize_dept.js">
+      <bpmn:incoming>Flow_00x84t5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1b4erlt</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_0ce8n78" sourceRef="Activity_1kqtnu4" targetRef="Activity_19dfkbj" />
+    <bpmn:serviceTask id="Activity_1kqtnu4" name="Fetch Email Java Delegate" camunda:class="com.camunda.delegates.FetchEmailDelegate">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="inputObj">
+            <camunda:script scriptFormat="javascript">var a = 1
+a;</camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1b4erlt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ce8n78</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_03ks3a4" sourceRef="Activity_19dfkbj" targetRef="Activity_0tva5z8" />
+    <bpmn:scriptTask id="Activity_19dfkbj" name="testing script" scriptFormat="javascript" camunda:resource="testing.js">
+      <bpmn:incoming>Flow_0ce8n78</bpmn:incoming>
+      <bpmn:outgoing>Flow_03ks3a4</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:serviceTask id="Activity_0tva5z8" name="FetchUserRoleDelegate" camunda:delegateExpression="${fetchUserRoleDelegate}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="settingUserRole">
+            <camunda:script scriptFormat="javascript">print("userRole : " + execution.getVariable("userRole"))
+
+userObj.userRole = userRole
+
+print("userObj:: ",JSON.stringify(userObj))</camunda:script>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_03ks3a4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ox4cby</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0ox4cby" sourceRef="Activity_0tva5z8" targetRef="Activity_0hvllnj" />
+    <bpmn:sequenceFlow id="Flow_14lymo9" sourceRef="Activity_0hvllnj" targetRef="Activity_1hcqu9q" />
+    <bpmn:serviceTask id="Activity_0hvllnj" name="FetchUserDepartment" camunda:expression="${fetchUserDepartment.getUserDepartment()}" camunda:resultVariable="userDepartment">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="testing">
+            <camunda:script scriptFormat="javascript">
+print("user Department : ",userDepartment)
+userObj.userDepartment = userDepartment;
+print("user Obj updated :: ", JSON.stringify(userObj))</camunda:script>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ox4cby</bpmn:incoming>
+      <bpmn:outgoing>Flow_14lymo9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0jcltsv" sourceRef="Activity_1hcqu9q" targetRef="Activity_1eg6c5u" />
+    <bpmn:serviceTask id="Activity_1hcqu9q" name="HTTP-Connector-GET">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://reqres.in/api/users</camunda:inputParameter>
+            <camunda:outputParameter name="responseGet">
+              <camunda:script scriptFormat="javascript">print("response from api: ",response);
+response;</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_14lymo9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jcltsv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1x0ikdn" sourceRef="Activity_1eg6c5u" targetRef="Event_0qdqeja" />
+    <bpmn:serviceTask id="Activity_1eg6c5u" name="HTTP-Connector-POST">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="javascript">var obj = {
+name:"Sakshi Sharma",
+email:"abc@gmail.com"
+}
+JSON.stringify(obj);</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">https://reqres.in/api/users</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:outputParameter name="responsePOST">
+              <camunda:script scriptFormat="javascript">print("response POST :: ",response)</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0jcltsv</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x0ikdn</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="task_execute">
+      <bpmndi:BPMNEdge id="Flow_0ce8n78_di" bpmnElement="Flow_0ce8n78">
+        <di:waypoint x="260" y="550" />
+        <di:waypoint x="420" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b4erlt_di" bpmnElement="Flow_1b4erlt">
+        <di:waypoint x="210" y="410" />
+        <di:waypoint x="210" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00x84t5_di" bpmnElement="Flow_00x84t5">
+        <di:waypoint x="210" y="267" />
+        <di:waypoint x="210" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0e9181x_di" bpmnElement="Flow_0e9181x">
+        <di:waypoint x="210" y="118" />
+        <di:waypoint x="210" y="187" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03ks3a4_di" bpmnElement="Flow_03ks3a4">
+        <di:waypoint x="470" y="510" />
+        <di:waypoint x="470" y="410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ox4cby_di" bpmnElement="Flow_0ox4cby">
+        <di:waypoint x="470" y="330" />
+        <di:waypoint x="470" y="267" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14lymo9_di" bpmnElement="Flow_14lymo9">
+        <di:waypoint x="520" y="227" />
+        <di:waypoint x="650" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jcltsv_di" bpmnElement="Flow_0jcltsv">
+        <di:waypoint x="700" y="267" />
+        <di:waypoint x="700" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x0ikdn_di" bpmnElement="Flow_1x0ikdn">
+        <di:waypoint x="700" y="410" />
+        <di:waypoint x="700" y="532" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_00idvaj_di" bpmnElement="task1">
+        <dc:Bounds x="160" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xma2dr_di" bpmnElement="task2">
+        <dc:Bounds x="160" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z20ig8_di" bpmnElement="Activity_1kqtnu4">
+        <dc:Bounds x="160" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qi4pb7_di" bpmnElement="Activity_19dfkbj">
+        <dc:Bounds x="420" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0u03o85_di" bpmnElement="Activity_0tva5z8">
+        <dc:Bounds x="420" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_039p18h_di" bpmnElement="Activity_0hvllnj">
+        <dc:Bounds x="420" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oxf60g_di" bpmnElement="Activity_1hcqu9q">
+        <dc:Bounds x="650" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qdqeja_di" bpmnElement="Event_0qdqeja">
+        <dc:Bounds x="682" y="532" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="192" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ql7h4r_di" bpmnElement="Activity_1eg6c5u">
+        <dc:Bounds x="650" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
