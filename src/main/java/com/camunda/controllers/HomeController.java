@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstantiationBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,21 +16,14 @@ public class HomeController {
     public String home(){
         return "This is camunda test";
     }
-    @GetMapping("/execute")
-    public String executeBPMN(){
+    @GetMapping("/execute/{processId}")
+    public String executeBPMN(@PathVariable("processId") String processId){
         ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        ProcessInstantiationBuilder instance =  engine.getRuntimeService().createProcessInstanceByKey("firstBPMN");
+        ProcessInstantiationBuilder instance =  engine.getRuntimeService().createProcessInstanceByKey(processId);
         String item = "Mridul Sharma";
         instance.setVariable("itemName", item);
         instance.businessKey("execute-endpoint");
         instance.executeWithVariablesInReturn();
         return "BPMN is executed";
-    }
-    @GetMapping("/tasks")
-    public String executeTasks(){
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        ProcessInstantiationBuilder instance = engine.getRuntimeService().createProcessInstanceByKey("task_execute");
-        instance.executeWithVariablesInReturn();
-        return "all Tasks BPMN executed";
     }
 }
